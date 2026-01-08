@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Run on Windows",
+        "request": "launch",
+        "type": "dart",
+        "deviceId": "windows"
+      },
+      {
+        "name": "Run on Android",
+        "request": "launch",
+        "type": "dart",
+        "deviceId": "127.0.0.1:7555"
+      }
+    ],
+    "compounds": [
+      {
+        "name": "All Devices",
+        "configurations": ["Run on Windows", "Run on Android"]
+      }
+    ]
+  }
