@@ -5,9 +5,11 @@ import 'pages/home_page.dart';
 import 'pages/video_page.dart';
 import 'pages/mine_page.dart';
 import 'pages/WebBrowserPage.dart';
+import 'package:isar/isar.dart';
 
 class MainShell extends StatefulWidget {
-  const MainShell({super.key});
+  final Isar isar;
+  const MainShell({super.key, required this.isar});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -17,13 +19,19 @@ class _MainShellState extends State<MainShell> {
   // 1. 定义一个索引，记录当前选中的是第几个菜单
   int _currentIndex = 0;
 
-  // 2. 将页面放入一个列表，顺序要和菜单一一对应
-  final List<Widget> _pages = [
-    const HomePage(),
-    const VideoPage(),
-    const WebBrowserPage(),
-    const ProfilePage(),
-  ];
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    // 4. 将 isar 实例分发给需要它的子页面
+    _pages = [
+      HomePage(isar: widget.isar), // 传入 isar
+      const VideoPage(), // 如果这个页面暂时不需要 isar 保持不变
+      const WebBrowserPage(),
+      ProfilePage(isar: widget.isar), // 传入 isar
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

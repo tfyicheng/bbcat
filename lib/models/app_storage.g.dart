@@ -38,7 +38,7 @@ const AppSettingsSchema = CollectionSchema(
       id: -4906094122524121629,
       name: r'key',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'key',
@@ -63,12 +63,7 @@ int _appSettingsEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.key.length * 3;
-  {
-    final value = object.value;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.value.length * 3;
   return bytesCount;
 }
 
@@ -91,7 +86,7 @@ AppSettings _appSettingsDeserialize(
   final object = AppSettings();
   object.id = id;
   object.key = reader.readString(offsets[0]);
-  object.value = reader.readStringOrNull(offsets[1]);
+  object.value = reader.readString(offsets[1]);
   return object;
 }
 
@@ -105,7 +100,7 @@ P _appSettingsDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -487,25 +482,8 @@ extension AppSettingsQueryFilter
     });
   }
 
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> valueIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'value',
-      ));
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
-      valueIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'value',
-      ));
-    });
-  }
-
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> valueEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -519,7 +497,7 @@ extension AppSettingsQueryFilter
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       valueGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -534,7 +512,7 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> valueLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -549,8 +527,8 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> valueBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -740,7 +718,7 @@ extension AppSettingsQueryProperty
     });
   }
 
-  QueryBuilder<AppSettings, String?, QQueryOperations> valueProperty() {
+  QueryBuilder<AppSettings, String, QQueryOperations> valueProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'value');
     });

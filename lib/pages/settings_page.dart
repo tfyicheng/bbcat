@@ -15,6 +15,8 @@ class _SettingsPageState extends State<SettingsPage> {
   static const platform = MethodChannel('com.example.bbcat/icon_switch');
   String? _selectedAlias = ".MainActivity";
   String _cacheSize = "0.00 MB"; // 用于展示缓存大小
+  String _historyLimit = "300"; // 浏览记录保留上限，默认300条
+  String _defaultHome = "https://m.baidu.com"; // 默认主页
 
   final Map<String?, Map<String, dynamic>> _maskOptions = {
     ".MainActivity": {"name": "默认模式 (bbcat)", "icon": Icons.apps},
@@ -31,7 +33,21 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _loadSettings() async {
     final val = await IsarService.getSetting("selected_mask");
-    if (val != null) setState(() => _selectedAlias = val);
+    if (val != null) {
+      setState(() => _selectedAlias = val);
+    }
+
+    final home = await IsarService.getSetting('default_home');
+    if (home != null) {
+      setState(() => _defaultHome = home);
+    }
+
+    final limit = await IsarService.getSetting('history_limit');
+    if (limit != null) {
+      setState(() {
+        _historyLimit = limit;
+      });
+    }
   }
 
   // --- 核心功能：计算缓存大小 ---
@@ -138,6 +154,18 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onTap: () => _showClearConfirmDialog(),
           ),
+          ListTile(
+            title: const Text("自定义默认主页"),
+            subtitle: Text(_defaultHome),
+            trailing: const Icon(Icons.home_outlined),
+            onTap: () => _showHomeSettingDialog(),
+          ),
+          ListTile(
+            title: const Text("浏览记录保留上限"),
+            subtitle: Text(_historyLimit), // 从 Isar 读取的值
+            trailing: const Icon(Icons.edit_note),
+            onTap: () => _showLimitDialog(),
+          ),
           SwitchListTile(
             secondary: const Icon(Icons.dark_mode_outlined),
             title: const Text("深色模式"),
@@ -168,6 +196,75 @@ class _SettingsPageState extends State<SettingsPage> {
               _clearCache();
             },
             child: const Text("立即清理", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHomeSettingDialog() {
+    final controller = TextEditingController(text: _defaultHome);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("设置默认主页"),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: "请输入完整的网址 (http/https)"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("取消"),
+          ),
+          TextButton(
+            onPressed: () async {
+              String url = controller.text.trim();
+              if (url.isNotEmpty) {
+                await IsarService.saveSetting('default_home', url);
+                setState(() => _defaultHome = url);
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text("保存"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLimitDialog() {
+    final TextEditingController controller = TextEditingController(
+      text: _historyLimit,
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("修改保留上限"),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number, // 只能输入数字
+          decoration: const InputDecoration(hintText: "请输入数字", suffixText: "条"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("取消"),
+          ),
+          TextButton(
+            onPressed: () async {
+              String newValue = controller.text.trim();
+              if (newValue.isNotEmpty) {
+                // 保存到数据库
+                await IsarService.saveSetting('history_limit', newValue);
+                setState(() {
+                  _historyLimit = newValue;
+                });
+                if (mounted) Navigator.pop(ctx);
+              }
+            },
+            child: const Text("确定"),
           ),
         ],
       ),

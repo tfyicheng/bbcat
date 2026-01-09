@@ -33,10 +33,16 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   # flutter_dynamic_icon_plus: ^1.4.0
+  url_launcher: ^6.1.10
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1 # 核心库
   path_provider: ^2.1.2 # 用于获取 Windows 和 Android 的存储路径
   webview_flutter: ^4.4.2
+  cached_network_image: ^3.4.1
+  http: ^1.6.0
+  media_kit: ^1.2.6
+  media_kit_video: ^2.0.1
+  media_kit_libs_video: ^1.0.7
 
 dev_dependencies:
   flutter_test:

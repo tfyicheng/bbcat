@@ -6,12 +6,12 @@ part 'app_storage.g.dart';
 // 1. 设置表
 @collection
 class AppSettings {
-  Id id = 0; // 每个模型都需要一个 Id，0 代表自动增长或固定主键
+  Id id = Isar.autoIncrement;
 
-  @Index(unique: true)
-  late String key; // 设置项的名称，如 "selected_mask"
+  @Index(unique: true, replace: true) // 加上这个！让 Key 具备唯一性并支持自动替换
+  late String key;
 
-  String? value; // 设置项的值
+  late String value;
 }
 
 // 2. 收藏表
