@@ -42,6 +42,10 @@ class _WebComponentState extends State<WebComponent> {
                 _isLoading = false;
                 _urlController.text = url;
               });
+              if (url == widget.initialUrl) {
+                return;
+              }
+              // print("保存历史记录: ${widget.initialUrl}----$url");
               // 异步保存历史记录
               _controller?.getTitle().then((title) {
                 IsarService.saveHistory(url, title ?? "无标题");

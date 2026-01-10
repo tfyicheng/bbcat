@@ -16,6 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String? _selectedAlias = ".MainActivity";
   String _cacheSize = "0.00 MB"; // 用于展示缓存大小
   String _historyLimit = "300"; // 浏览记录保留上限，默认300条
+  String _summaryLimit = "200"; // 汇总数据上限，默认200条
   String _defaultHome = "https://m.baidu.com"; // 默认主页
 
   final Map<String?, Map<String, dynamic>> _maskOptions = {
@@ -46,6 +47,13 @@ class _SettingsPageState extends State<SettingsPage> {
     if (limit != null) {
       setState(() {
         _historyLimit = limit;
+      });
+    }
+
+    final summaryLimit = await IsarService.getSetting('summary_limit');
+    if (summaryLimit != null) {
+      setState(() {
+        _summaryLimit = summaryLimit;
       });
     }
   }
@@ -166,14 +174,22 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: const Icon(Icons.edit_note),
             onTap: () => _showLimitDialog(),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.dark_mode_outlined),
-            title: const Text("深色模式"),
-            value: Theme.of(context).brightness == Brightness.dark,
-            onChanged: (v) {
-              // 这里预留深色模式切换逻辑
+          ListTile(
+            title: const Text("汇总数据上限"),
+            subtitle: Text(_summaryLimit), // 从 Isar 读取的值
+            trailing: const Icon(Icons.edit_note),
+            onTap: () {
+              _showsummaryDialog();
             },
           ),
+          // SwitchListTile(
+          //   secondary: const Icon(Icons.dark_mode_outlined),
+          //   title: const Text("深色模式"),
+          //   value: Theme.of(context).brightness == Brightness.dark,
+          //   onChanged: (v) {
+          //     // 这里预留深色模式切换逻辑
+          //   },
+          // ),
         ],
       ),
     );
@@ -260,6 +276,44 @@ class _SettingsPageState extends State<SettingsPage> {
                 await IsarService.saveSetting('history_limit', newValue);
                 setState(() {
                   _historyLimit = newValue;
+                });
+                if (mounted) Navigator.pop(ctx);
+              }
+            },
+            child: const Text("确定"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showsummaryDialog() {
+    final TextEditingController controller = TextEditingController(
+      text: _summaryLimit,
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("修改汇总上限"),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number, // 只能输入数字
+          decoration: const InputDecoration(hintText: "请输入数字", suffixText: "条"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("取消"),
+          ),
+          TextButton(
+            onPressed: () async {
+              String newValue = controller.text.trim();
+              if (newValue.isNotEmpty) {
+                // 保存到数据库
+                await IsarService.saveSetting('summary_limit', newValue);
+                setState(() {
+                  _summaryLimit = newValue;
                 });
                 if (mounted) Navigator.pop(ctx);
               }

@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     try {
       var data = await ApiService.getPlatforms();
 
-      String result = await SyncService.syncFavorites(widget.isar);
+      // String result = await SyncService.syncFavorites(widget.isar);
 
       setState(() {
         _platforms = data;
@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> {
       });
 
       // 提示更新结果
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result)));
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text(result)));
     } catch (e) {
       setState(() => _isLoading = false);
       // 可选：添加一个简单的错误提示
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("直播平台"),
+        title: const Text("平台"),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -67,8 +67,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 150,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
                 childAspectRatio: 1.0,
               ),
               itemCount: _platforms.length,

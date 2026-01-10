@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 import 'dart:io';
 // 导入刚才写的三个页面
 import 'pages/home_page.dart';
 import 'pages/video_page.dart';
 import 'pages/mine_page.dart';
 import 'pages/WebBrowserPage.dart';
+import 'pages/summary_page.dart';
 import 'package:isar/isar.dart';
 
 class MainShell extends StatefulWidget {
@@ -15,7 +17,7 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell> with WindowListener {
   // 1. 定义一个索引，记录当前选中的是第几个菜单
   int _currentIndex = 0;
 
@@ -25,16 +27,51 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     // 4. 将 isar 实例分发给需要它的子页面
-    _pages = [
-      HomePage(isar: widget.isar), // 传入 isar
-      const VideoPage(), // 如果这个页面暂时不需要 isar 保持不变
-      const WebBrowserPage(),
-      ProfilePage(isar: widget.isar), // 传入 isar
-    ];
+    //_pages = [
+    //   HomePage(isar: widget.isar), // 传入 isar
+    //   SummaryPage(isar: widget.isar), // 传入 isar
+    //   VideoStreamPage(
+    //     isar: widget.isar,
+    //     isCurrentTab: _currentIndex == 2,
+    //   ), // 如果这个页面暂时不需要 isar 保持不变
+    //   const WebBrowserPage(),
+    //   ProfilePage(isar: widget.isar), // 传入 isar
+    // ];
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    // 3. 销毁监听器，防止内存泄漏
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  // 4. 实现监听方法：拦截点击右上角“X”的行为
+  @override
+  void onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose) {
+      // 如果设置了阻止关闭，则执行隐藏
+      await windowManager.hide();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      HomePage(isar: widget.isar),
+      SummaryPage(isar: widget.isar),
+      VideoStreamPage(
+        isar: widget.isar,
+        // 这里的 _currentIndex 是 MainShell 当前选中的底部菜单索引
+        // 假设视频流页面在第 3 个位置（索引为 2）
+        isCurrentTab: _currentIndex == 2,
+      ),
+      const WebBrowserPage(),
+      ProfilePage(isar: widget.isar),
+    ];
+
     // 获取屏幕宽度，判断是否为宽屏（Windows/平板）
     bool isWideScreen = MediaQuery.of(context).size.width > 600;
 
@@ -59,6 +96,10 @@ class _MainShellState extends State<MainShell> {
                 NavigationRailDestination(
                   icon: Icon(Icons.home),
                   label: Text('主页'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.summarize),
+                  label: Text('汇总'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.video_library),
@@ -104,6 +145,10 @@ class _MainShellState extends State<MainShell> {
               },
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: '主页'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.summarize),
+                  label: '汇总',
+                ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.video_library),
                   label: '视频流',

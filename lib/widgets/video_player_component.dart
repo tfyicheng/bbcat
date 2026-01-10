@@ -9,11 +9,13 @@ import 'package:flutter/services.dart';
 class VideoPlayerComponent extends StatefulWidget {
   final Map<String, dynamic> videoData;
   final Isar isar;
+  final bool isPageActive; // 新增：当前页面是否处于激活状态
 
   const VideoPlayerComponent({
     super.key,
     required this.videoData,
     required this.isar,
+    this.isPageActive = true, // 默认激活
   });
 
   @override
@@ -29,14 +31,37 @@ class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
   @override
   void initState() {
     super.initState();
-    // 3. 初始化播放器
     _player = Player();
     _controller = VideoController(_player);
 
-    // 4. 开始播放视频流
-    _player.open(Media(widget.videoData['address']));
+    // 1. 先设置媒体源
+    _player.open(Media(widget.videoData['address']), play: false); // 默认不自动播放
 
+    // 2. 根据初始状态决定是否播放
+    if (widget.isPageActive) {
+      print("初始化：激活状态，开始播放");
+      _player.play();
+      // 如果希望绝对实时，避免延迟积累,可以重新 open 这个地址，强制播放器拉取最新的切片
+      //_player.open(Media(widget.videoData['address']));
+    } else {
+      print("初始化：非激活状态，保持暂停");
+    }
     _checkFavoriteStatus();
+  }
+
+  //监听父组件传来的状态变化
+  @override
+  void didUpdateWidget(VideoPlayerComponent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isPageActive != oldWidget.isPageActive) {
+      if (widget.isPageActive) {
+        print("页面激活，继续播放");
+        _player.play(); // 回到页面，继续播放
+      } else {
+        print("页面离开，暂停播放");
+        _player.pause(); // 离开页面，立即暂停
+      }
+    }
   }
 
   @override

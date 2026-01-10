@@ -46,8 +46,8 @@ class _SubListPageState extends State<SubListPage> {
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 150,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
                 childAspectRatio: 1.0,
               ),
               itemCount: _zhuboList.length,
@@ -112,6 +112,23 @@ class _SubListPageState extends State<SubListPage> {
                               ),
                             );
                           },
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          color: Colors.black45,
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(
+                            item['title'],
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
                       ),
                     ],

@@ -21,7 +21,7 @@ class ProfilePage extends StatelessWidget {
               CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),
               SizedBox(height: 10),
               Text(
-                "开发者用户",
+                "用户N",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -30,8 +30,7 @@ class ProfilePage extends StatelessWidget {
         const SizedBox(height: 30),
 
         // 功能列表
-        _buildMenuTile(context, Icons.favorite_outline, "我的收藏", () {}),
-
+        // _buildMenuTile(context, Icons.favorite_outline, "我的收藏", () {}),
         _buildMenuTile(context, Icons.live_tv, "直播收藏", () {
           Navigator.push(
             context,
@@ -57,7 +56,7 @@ class ProfilePage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const HistoryManagePage()),
           );
         }),
-        _buildMenuTile(context, Icons.history, "播放记录", () {}),
+        // _buildMenuTile(context, Icons.history, "播放记录", () {}),
         _buildMenuTile(context, Icons.settings_outlined, "设置", () {
           // 点击进入设置页面
           Navigator.push(
@@ -65,7 +64,7 @@ class ProfilePage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SettingsPage()),
           );
         }),
-        _buildMenuTile(context, Icons.info_outline, "关于我们", () {}),
+        // _buildMenuTile(context, Icons.info_outline, "关于我们", () {}),
       ],
     );
   }

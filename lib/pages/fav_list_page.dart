@@ -41,6 +41,7 @@ class _FavListPageState extends State<FavListPage> {
             onPressed: () async {
               // 手动触发同步
               String msg = await SyncService.syncFavorites(widget.isar);
+              // String msg = await SyncService.syncFromSummary(widget.isar);
               _refreshList();
               ScaffoldMessenger.of(
                 context,
@@ -55,8 +56,8 @@ class _FavListPageState extends State<FavListPage> {
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 150,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
                 childAspectRatio: 1.0,
               ),
               itemCount: _favs.length,
