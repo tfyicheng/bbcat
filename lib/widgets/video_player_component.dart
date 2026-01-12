@@ -22,7 +22,8 @@ class VideoPlayerComponent extends StatefulWidget {
   State<VideoPlayerComponent> createState() => _VideoPlayerComponentState();
 }
 
-class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
+class _VideoPlayerComponentState extends State<VideoPlayerComponent>
+    with WidgetsBindingObserver {
   bool _isFavorited = false;
 
   late final Player _player;
@@ -31,6 +32,7 @@ class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _player = Player();
     _controller = VideoController(_player);
 
@@ -40,9 +42,9 @@ class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
     // 2. 根据初始状态决定是否播放
     if (widget.isPageActive) {
       print("初始化：激活状态，开始播放");
-      _player.play();
+      //_player.play();
       // 如果希望绝对实时，避免延迟积累,可以重新 open 这个地址，强制播放器拉取最新的切片
-      //_player.open(Media(widget.videoData['address']));
+      _player.open(Media(widget.videoData['address']));
     } else {
       print("初始化：非激活状态，保持暂停");
     }
@@ -56,7 +58,8 @@ class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
     if (widget.isPageActive != oldWidget.isPageActive) {
       if (widget.isPageActive) {
         print("页面激活，继续播放");
-        _player.play(); // 回到页面，继续播放
+        //_player.play(); // 回到页面，继续播放
+        _player.open(Media(widget.videoData['address']));
       } else {
         print("页面离开，暂停播放");
         _player.pause(); // 离开页面，立即暂停
@@ -65,9 +68,27 @@ class _VideoPlayerComponentState extends State<VideoPlayerComponent> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // 只有当当前 Tab 是视频页时，才处理后台返回逻辑
+    if (!widget.isPageActive) return;
+
+    if (state == AppLifecycleState.resumed) {
+      print("检测到 App 从后台回到前台，且处于视频 Tab，尝试恢复直播...");
+      // 强制重新拉流，解决画面冻结问题
+      _player.open(Media(widget.videoData['address']));
+    } else if (state == AppLifecycleState.paused) {
+      print("检测到 App 进入后台，暂停播放节省流量");
+      _player.pause();
+    }
+  }
+
+  @override
   void dispose() {
     // 5. 必须销毁播放器，否则会内存泄漏或声音卡顿
     _player.dispose();
+    WidgetsBinding.instance.removeObserver(this); // 销毁监听器
     super.dispose();
   }
 

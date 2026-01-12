@@ -47,7 +47,7 @@ class _FakeFeedbackPageState extends State<FakeFeedbackPage> {
             GestureDetector(
               onTap: _handleVersionClick,
               child: Text(
-                "Version 1.0.2", // 看起来很平常的版本号
+                "Version 1.0.0", // 看起来很平常的版本号
                 style: TextStyle(color: Colors.grey[400]),
               ),
             ),

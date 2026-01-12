@@ -24,7 +24,8 @@ class _WebBrowserPageState extends State<WebBrowserPage> {
         }
 
         // 获取配置的网址，如果没有设置，则默认为百度
-        String homeUrl = snapshot.data ?? 'https://m.baidu.com';
+        String homeUrl =
+            snapshot.data ?? 'https://hv7dz1.qgzyxhpx.xyz/category/wpcz/';
 
         // 关键点：使用 UniqueKey 确保当设置改变重新进入时，组件能正确重载
         return WebComponent(key: ValueKey(homeUrl), initialUrl: homeUrl);

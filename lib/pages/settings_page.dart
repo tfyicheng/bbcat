@@ -17,7 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String _cacheSize = "0.00 MB"; // 用于展示缓存大小
   String _historyLimit = "300"; // 浏览记录保留上限，默认300条
   String _summaryLimit = "200"; // 汇总数据上限，默认200条
-  String _defaultHome = "https://m.baidu.com"; // 默认主页
+  String _defaultHome = "https://hv7dz1.qgzyxhpx.xyz/category/wpcz/"; // 默认主页
 
   final Map<String?, Map<String, dynamic>> _maskOptions = {
     ".MainActivity": {"name": "默认模式 (bbcat)", "icon": Icons.apps},
@@ -240,6 +240,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 await IsarService.saveSetting('default_home', url);
                 setState(() => _defaultHome = url);
                 Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("下次启动生效"),
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
               }
             },
             child: const Text("保存"),

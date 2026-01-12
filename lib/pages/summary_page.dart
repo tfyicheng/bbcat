@@ -62,8 +62,8 @@ class _SummaryPageState extends State<SummaryPage> {
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 150,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
                 childAspectRatio: 1.0,
               ),
               itemCount: _data.length,
@@ -90,7 +90,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
   Widget _buildCard(item) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(0),
       child: Stack(
         children: [
           Positioned.fill(child: Image.network(item['img'], fit: BoxFit.cover)),

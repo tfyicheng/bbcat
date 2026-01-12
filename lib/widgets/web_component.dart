@@ -84,7 +84,7 @@ class _WebComponentState extends State<WebComponent> {
   @override
   Widget build(BuildContext context) {
     // 如果是 Windows，显示一个占位 UI，不渲染 WebViewWidget
-    if (Platform.isWindows) {
+    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
       return Scaffold(
         appBar: widget.showAppBar
             ? AppBar(title: Text("浏览器 (Windows模式)"))

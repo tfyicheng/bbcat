@@ -18,7 +18,7 @@ class SyncService {
       final favorites = await isar.favoriteZhubos.where().findAll();
       if (favorites.isEmpty) {
         _isSyncing = false;
-        return "更新 0/0 个";
+        return "更新收藏 0/0 个";
       }
 
       int updatedCount = 0;
@@ -50,7 +50,7 @@ class SyncService {
         }
       }
       _isSyncing = false;
-      return "已更新 $updatedCount/${favorites.length} 个";
+      return "已更新收藏 $updatedCount/${favorites.length} 个";
     } catch (e) {
       _isSyncing = false;
       print("更新失败: $e");
@@ -66,7 +66,7 @@ class SyncService {
       final favorites = await isar.favoriteZhubos.where().findAll();
       if (favorites.isEmpty) {
         _isSyncing = false;
-        return "更新 0/0 个";
+        return "更新收藏 0/0 个";
       }
 
       int updatedCount = 0;
@@ -107,7 +107,7 @@ class SyncService {
         }
       }
       _isSyncing = false;
-      return "已更新 $updatedCount/${favorites.length} 个";
+      return "已更新收藏 $updatedCount/${favorites.length} 个";
     } catch (e) {
       _isSyncing = false;
       print("全局同步逻辑异常: $e");
@@ -169,7 +169,7 @@ class SyncService {
       }
 
       _isSummarySyncing = false;
-      return "汇总同步完成：更新 $updatedCount 个";
+      return "汇总同步完成：更新收藏 $updatedCount 个";
     } catch (e) {
       _isSummarySyncing = false;
       print("汇总同步错误: $e");

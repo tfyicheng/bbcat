@@ -18,7 +18,7 @@ void main() async {
   // 初始化播放器
   MediaKit.ensureInitialized();
 
-  if (Platform.isWindows) {
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
     // 必须初始化 windowManager
     await windowManager.ensureInitialized();
 
